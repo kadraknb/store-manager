@@ -1,23 +1,24 @@
 const camelize = require('camelize');
-// const snakeize = require('snakeize');
+const snakeize = require('snakeize');
 const connection = require('./connection');
 
-// const insert = async (product) => {
-//   const columns = Object.keys(snakeize(travel))
-//     .map((key) => `${key}`)
-//     .join(', ');
+const insert = async (product) => {
+  console.log(product);
+  const columns = Object.keys(snakeize(product))
+    .map((key) => `${key}`)
+    .join(', ');
 
-//   const placeholders = Object.keys(travel)
-//     .map((_key) => '?')
-//     .join(', ');
+  const placeholders = Object.keys(product)
+    .map((_key) => '?')
+    .join(', ');
 
-//   const [{ insertId }] = await connection.execute(
-//     `INSERT INTO travels (${columns}) VALUE (${placeholders})`,
-//     [...Object.values(travel)],
-//   );
+  const [{ insertId }] = await connection.execute(
+    `INSERT INTO products (${columns}) VALUE (${placeholders})`,
+    [...Object.values(product)],
+  );
 
-//   return insertId;
-// };
+  return insertId;
+};
 
 const findById = async (productId) => {
   const [[result]] = await connection.execute(
@@ -52,7 +53,7 @@ const findAll = async () => {
 // };
 
 module.exports = {
-  // insert,
+  insert,
   findById,
   findAll,
   // findByTravelStatusId,

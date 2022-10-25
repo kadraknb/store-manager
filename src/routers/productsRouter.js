@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.get('/:id', controllers.products.getForId);
 router.get('/', controllers.products.getAll);
+router.post('/', controllers.products.insert);
 // router.put('/', async (req, res) => {
 //   const {} = req.params;
 //   const {} = req.body;

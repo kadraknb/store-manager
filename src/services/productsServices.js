@@ -1,4 +1,5 @@
 const model = require('../models');
+const validation = require('./validations');
 
 const getForId = async (req, res) => {
   const { id } = req.params;
@@ -11,4 +12,18 @@ const getForId = async (req, res) => {
   return res.status(200).json(dataForId);
 };
 
-module.exports = { getForId };
+const insert = async (req, res) => {
+  const { name } = req.body;
+  const validationName = validation.products.name(name);
+  
+  if (validationName.status) {
+    return res
+      .status(validationName.status)
+      .json({ message: validationName.message });
+  }
+
+  const id = await model.products.insert({ name });
+  return res.status(201).json({ id, name });
+};
+
+module.exports = { getForId, insert };

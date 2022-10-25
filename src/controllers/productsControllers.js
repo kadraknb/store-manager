@@ -13,7 +13,13 @@ const getForId = async (req, res) => {
   return ress;
 };
 
+const insert = async (req, res) => {
+  const ress = await service.products.insert(req, res);
+  return ress;
+};
+
 module.exports = {
   getAll,
   getForId,
+  insert,
 };
