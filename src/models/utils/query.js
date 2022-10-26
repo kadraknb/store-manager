@@ -1,4 +1,4 @@
-// const camelize = require('camelize');
+const camelize = require('camelize');
 const snakeize = require('snakeize');
 const connection = require('../connection');
 
@@ -19,6 +19,21 @@ const insert = async (tables, product) => {
   return insertId;
 };
 
+const findById = async (tables, productId) => {
+  const [[result]] = await connection.execute(
+    `SELECT * FROM ${tables} WHERE id = ?`,
+    [productId],
+  );
+  return camelize(result);
+};
+
+const findAll = async (tables) => {
+  const [result] = await connection.execute(`SELECT * FROM ${tables}`);
+  return camelize(result);
+};
+
 module.exports = {
   insert,
+  findAll,
+  findById,
 };

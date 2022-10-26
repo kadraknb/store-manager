@@ -1,29 +1,10 @@
-// const camelize = require('camelize');
+const camelize = require('camelize');
 // const snakeize = require('snakeize');
-// const connection = require('./connection');
+const connection = require('./connection');
 const utils = require('./utils');
 
-// const insert = async (product) => {
-//   console.log(product);
-//   const columns = Object.keys(snakeize(product))
-//     .map((key) => `${key}`)
-//     .join(', ');
-
-//   const placeholders = Object.keys(product)
-//     .map((_key) => '?')
-//     .join(', ');
-
-//   const [{ insertId }] = await connection.execute(
-//     `INSERT INTO products (${columns}) VALUE (${placeholders})`,
-//     [...Object.values(product)],
-//   );
-
-//   return insertId;
-// };
 const insertSale = async () => {
-  // const date = new Date().toLocaleString('en-US');
-  console.log(new Date().toLocaleString('en-US'));
-  const insertId = await utils.query.insert('sales', { date: null });
+  const insertId = await utils.query.insert('sales', { date: new Date() });
   return insertId;
 };
 
@@ -36,6 +17,40 @@ const insertSalesProducts = async (sales) => {
   return saleId;
 };
 
+const findById = async (productId) => {
+  const [result] = await connection.execute(
+    `SELECT S.date as date, SP.product_id as productId, SP.quantity as quantity
+      FROM StoreManager.sales as S
+      inner join StoreManager.sales_products as SP
+      on S.id = SP.sale_id
+      where S.id = ?
+      group by productId, quantity, S.date
+      order by productId;`,
+    [productId],
+  );
+  return camelize(result);
+};
+
+const findAll = async () => {
+  const [result] = await connection.execute(
+    `SELECT S.id as saleId, S.date as date, SP.product_id as productId, SP.quantity as quantity
+      FROM StoreManager.sales as S
+      inner join StoreManager.sales_products as SP
+      on S.id = SP.sale_id
+      group by saleId, productId, quantity
+      order by saleId, productId;`,
+);
+  return camelize(result);
+};
+
+const getSaleId = async (saleId) => {
+  const ress = await utils.query.findById('sales', saleId);
+  return camelize(ress);
+};
+
 module.exports = {
   insertSalesProducts,
+  findAll,
+  findById,
+  getSaleId,
 };
