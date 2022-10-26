@@ -7,9 +7,7 @@ const getAll = async (_req, res) => {
 };
 
 const getForId = async (req, res) => {
-  // console.log(2);
   const ress = await service.products.getForId(req, res);
-  // console.log(ress);
   return ress;
 };
 
@@ -18,8 +16,14 @@ const insert = async (req, res) => {
   return ress;
 };
 
+const attProducts = async (req, res) => {
+  const result = await service.products.updateById(req, res);
+  return result;
+};
+
 module.exports = {
   getAll,
   getForId,
   insert,
+  attProducts,
 };

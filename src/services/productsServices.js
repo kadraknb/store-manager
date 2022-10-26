@@ -26,4 +26,24 @@ const insert = async (req, res) => {
   return res.status(201).json({ id, name });
 };
 
-module.exports = { getForId, insert };
+const updateById = async (req, res) => {
+  const { name } = req.body;
+  const { id } = req.params;
+
+  const validationName = validation.products.name(name);
+  if (validationName) {
+    return res
+      .status(validationName.status)
+      .json({ message: validationName.message });
+  }
+
+  const validationId = await model.products.findById(id);
+  if (!validationId) {
+    return res.status(404).json({ message: 'Product not found' });
+  }
+
+  await model.products.updateById(id, { name });
+  return res.status(200).json({ id, name });
+};
+
+module.exports = { getForId, insert, updateById };
