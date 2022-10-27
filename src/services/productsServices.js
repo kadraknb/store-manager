@@ -46,4 +46,16 @@ const updateById = async (req, res) => {
   return res.status(200).json({ id, name });
 };
 
-module.exports = { getForId, insert, updateById };
+const deleteById = async (req, res) => {
+  const { id } = req.params;
+  
+  const validationId = await model.products.findById(id);
+  if (!validationId) {
+    return res.status(404).json({ message: 'Product not found' });
+  }
+
+  await model.products.deleteById(id);
+  return res.status(204).end();
+};
+
+module.exports = { getForId, insert, updateById, deleteById };

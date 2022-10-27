@@ -33,13 +33,12 @@ const findAll = async () => {
   return camelize(result);
 };
 
-// const findByTravelStatusId = async (travelStatusId) => {
-//   const [result] = await connection.execute(
-//     'SELECT * FROM travels WHERE travel_status_id = ?',
-//     [travelStatusId],
-//   );
-//   return camelize(result);
-// };
+const deleteById = async (productId) => {
+  await connection.execute(
+    'DELETE FROM products WHERE id = ?',
+    [productId],
+  );
+};
 
 const updateById = async (travelId, dataToUpdate) => {
   const formattedColumns = Object.keys(snakeize(dataToUpdate))
@@ -52,10 +51,20 @@ const updateById = async (travelId, dataToUpdate) => {
   );
 };
 
+const search = async (searchName) => {
+  const searchN = `%${searchName}%`;
+  const [result] = await connection.execute(
+    'SELECT id, name FROM StoreManager.products where name LIKE ?',
+    [searchN],
+  );
+  return result;
+};
+
 module.exports = {
   insert,
   findById,
   findAll,
-  // findByTravelStatusId,
+  deleteById,
   updateById,
+  search,
 };

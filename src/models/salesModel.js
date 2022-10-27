@@ -1,5 +1,5 @@
 const camelize = require('camelize');
-// const snakeize = require('snakeize');
+const snakeize = require('snakeize');
 const connection = require('./connection');
 const utils = require('./utils');
 
@@ -48,9 +48,51 @@ const getSaleId = async (saleId) => {
   return camelize(ress);
 };
 
+const deleteById = async (productId) => {
+  await connection.execute('DELETE FROM sales WHERE id = ?', [productId]);
+};
+
+const updateById = async (travelId, dataToUpdateArr) => {
+  // const formattedColumns = Object.keys(snakeize(dataToUpdate[0]))
+  //   .map((key) => `${key} = ?`)
+  //   .join(', ');
+
+  // console.log(formattedColumns);
+  // console.log(dataToUpdate);
+  // console.log(travelId);
+  // return connection.execute(
+  //   `UPDATE sales_products SET ${formattedColumns} WHERE sale_id = ?`,
+  //   [...Object.values(dataToUpdate[0]), travelId],
+  // );
+  
+  //   const [[result]] = await connection.execute(
+  //     'SELECT product_id, quantity FROM sales_products WHERE id = ?',
+  //     [travelId],
+  //   );
+  //   // return camelize(result);
+  // console.log(result);
+
+  const formattedColumns = dataToUpdateArr.map((dataToUpdate) => Object.keys(snakeize(dataToUpdate))
+    .map((key) => `${key} = ?`)
+      .join(', '));
+  
+  formattedColumns.forEach(async (formattedColumn, index) =>
+    // console.log(Object.values(dataToUpdateArr[index]), 'asddasdasd');
+    connection.execute(
+      `UPDATE sales_products SET ${formattedColumn} WHERE sale_id = ? and product_id = ?`,
+      [
+        ...Object.values(dataToUpdateArr[index]),
+        travelId,
+        dataToUpdateArr[index].productId,
+      ],
+    ));
+};
+
 module.exports = {
   insertSalesProducts,
   findAll,
   findById,
   getSaleId,
+  deleteById,
+  updateById,
 };

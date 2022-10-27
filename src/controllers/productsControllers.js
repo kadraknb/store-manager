@@ -21,9 +21,23 @@ const attProducts = async (req, res) => {
   return result;
 };
 
+const deleteById = async (req, res) => {
+  const result = await service.products.deleteById(req, res);
+  return result;
+};
+
+const search = async (req, res) => {
+  const { q } = req.query;
+  const result = await model.products.search(q);
+
+  return res.status(200).json(result);
+};
+
 module.exports = {
   getAll,
   getForId,
   insert,
   attProducts,
+  deleteById,
+  search,
 };

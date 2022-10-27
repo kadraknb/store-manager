@@ -2,6 +2,14 @@ const model = require('../models');
 const validation = require('./validations');
 
 const { quantity, productIdIsInvalide } = validation.sales;
+const {
+    insertSalesProducts,
+    findById,
+    getSaleId,
+    findAll,
+    deleteById,
+    
+  } = model.sales;
 
 const insert = async ({ body }, res) => {
   const isNotValidQuantity = quantity(body);
@@ -15,20 +23,19 @@ const insert = async ({ body }, res) => {
     const { status, message } = isNotValidProductId;
     return res.status(status).json({ message });
   }
-  const id = await model.sales.insertSalesProducts(body);
+  const id = await insertSalesProducts(body);
   const ress = { id, itemsSold: [...body] };
 
   return res.status(201).json(ress);
 };
 
-const getAll = async (req, res) => {
-  const ress = await model.sales.findAll();
+const getAll = async (_req, res) => {
+  const ress = await findAll();
   return res.status(200).json(ress);
 };
 
 const getById = async (req, res) => {
   const { id } = req.params;
-  const { getSaleId, findById } = model.sales;
 
   const saleId = await getSaleId(Number(id));
   if (!saleId) return res.status(404).json({ message: 'Sale not found' });
@@ -37,4 +44,38 @@ const getById = async (req, res) => {
   return res.status(200).json(result);
 };
 
-module.exports = { insert, getAll, getById };
+const deleteSale = async (req, res) => {
+  const { id } = req.params;
+
+  const result = await getSaleId(id);
+  if (!result) return res.status(404).json({ message: 'Sale not found' });
+
+  await deleteById(id);
+  res.status(204).end();
+};
+
+const updateById = async (req, res) => {
+  const { id } = req.params;
+
+  const result = await getSaleId(id);
+  if (!result) return res.status(404).json({ message: 'Sale not found' });
+
+  const isNotValidQuantity = quantity(req.body);
+  if (isNotValidQuantity) {
+ return res
+    .status(422)
+    .json({ message: '"quantity" must be greater than or equal to 1' }); 
+  }
+
+  const isNotValidProductId = await productIdIsInvalide(req.body);
+  if (isNotValidProductId) {
+    const { status, message } = isNotValidProductId;
+    return res.status(status).json({ message });
+  }
+
+  await model.sales.updateById(id, req.body);
+  const ress = { saleId: id, itemsUpdated: [...req.body] };
+  return res.status(200).json(ress);
+};
+
+module.exports = { insert, getAll, getById, deleteSale, updateById };
