@@ -7,13 +7,18 @@ const getAll = async (_req, res) => {
 };
 
 const getForId = async (req, res) => {
-  const ress = await service.products.getForId(req, res);
-  return ress;
+    const { id } = req.params;
+  const ress = await service.products.getForId(id);
+
+  if (!ress) return res.status(404).json({ message: 'Product not found' });
+  
+    return res.status(200).json(ress);
 };
 
 const insert = async (req, res) => {
-  const ress = await service.products.insert(req, res);
-  return ress;
+  const { name } = req.body;
+  const ress = await service.products.insert(name);
+  return res.status(ress.status).json(ress.message);
 };
 
 const attProducts = async (req, res) => {
