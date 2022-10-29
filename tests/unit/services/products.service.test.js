@@ -8,15 +8,6 @@ describe("Testes de unidade service de produtos", function () {
   afterEach(() => {
     sinon.restore();
   });
-  // describe("Testes de unidade models de produtos", function () {
-  //   // it("recuperando todos os produtos em productService", async function () {
-  //   //   sinon.stub(products, "getAllProduct").resolves(productFromDb);
-  //   //   // console.log(connection)
-  //   //   const result = await services.products.();
-  //   //   expect(result).to.be.deep.equal(productFromDb);
-  //   // });
-  // });
-
   it("reucuperando um produto a partir do seu id", async function () {
     sinon.stub(products, "findById").resolves(productFromDb);
 

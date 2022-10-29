@@ -29,19 +29,19 @@ const insert = async ({ body }, res) => {
   return res.status(201).json(ress);
 };
 
-const getAll = async (_req, res) => {
+const getAll = async () => {
   const ress = await findAll();
-  return res.status(200).json(ress);
+  return ress;
 };
 
-const getById = async (req, res) => {
-  const { id } = req.params;
-
+const getById = async (id) => {
   const saleId = await getSaleId(Number(id));
-  if (!saleId) return res.status(404).json({ message: 'Sale not found' });
+  if (!saleId) {
+    return { status: 404, ress: { message: 'Sale not found' } };
+  }
 
   const result = await findById(id);
-  return res.status(200).json(result);
+  return { status: 200, ress: result };
 };
 
 const deleteSale = async (req, res) => {

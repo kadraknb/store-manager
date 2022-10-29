@@ -2,14 +2,13 @@ const model = require('../models');
 const service = require('../services');
 
 const getAll = async (_req, res) => {
-  const data = await model.products.findAll();
+  const data = await service.products.getAll();
   return res.status(200).json(data);
 };
 
 const getForId = async (req, res) => {
-    const { id } = req.params;
+  const { id } = req.params;
   const ress = await service.products.getForId(id);
-
   if (!ress) return res.status(404).json({ message: 'Product not found' });
   
     return res.status(200).json(ress);

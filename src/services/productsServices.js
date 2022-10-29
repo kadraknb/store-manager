@@ -1,6 +1,11 @@
 const model = require('../models');
 const validation = require('./validations');
 
+const getAll = async () => {
+  const result = await model.products.findAll();
+  return result;
+};
+
 const getForId = async (id) => {
   const result = await model.products.findById(id);
   return result;
@@ -51,4 +56,4 @@ const deleteById = async (req, res) => {
   return res.status(204).end();
 };
 
-module.exports = { getForId, insert, updateById, deleteById };
+module.exports = { getForId, insert, updateById, deleteById, getAll };

@@ -6,13 +6,14 @@ const insert = async (req, res) => {
 };
 
 const getAll = async (req, res) => {
-  const ress = await service.sales.getAll(req, res);
-  return ress;
+  const ress = await service.sales.getAll();
+  return res.status(200).json(ress);
 };
 
 const getById = async (req, res) => {
-  const ress = await service.sales.getById(req, res);
-  return ress;
+  const { id } = req.params;
+  const ress = await service.sales.getById(id);
+  return res.status(ress.status).json(ress.ress);
 };
 
 const deleteById = async (req, res) => {

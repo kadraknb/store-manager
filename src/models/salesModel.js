@@ -19,7 +19,7 @@ const insertSalesProducts = async (sales) => {
 
 const findById = async (productId) => {
   const [result] = await connection.execute(
-    `SELECT S.date as date, SP.product_id as productId, SP.quantity as quantity
+    `SELECT CONCAT(S.date) as date, SP.product_id as productId, SP.quantity as quantity
       FROM StoreManager.sales as S
       inner join StoreManager.sales_products as SP
       on S.id = SP.sale_id
@@ -33,13 +33,14 @@ const findById = async (productId) => {
 
 const findAll = async () => {
   const [result] = await connection.execute(
-    `SELECT S.id as saleId, S.date as date, SP.product_id as productId, SP.quantity as quantity
+    `SELECT S.id as saleId, CONCAT(S.date) as date,
+      SP.product_id as productId, SP.quantity as quantity
       FROM StoreManager.sales as S
       inner join StoreManager.sales_products as SP
       on S.id = SP.sale_id
       group by saleId, productId, quantity
       order by saleId, productId;`,
-);
+  );
   return camelize(result);
 };
 
@@ -53,31 +54,11 @@ const deleteById = async (productId) => {
 };
 
 const updateById = async (travelId, dataToUpdateArr) => {
-  // const formattedColumns = Object.keys(snakeize(dataToUpdate[0]))
-  //   .map((key) => `${key} = ?`)
-  //   .join(', ');
-
-  // console.log(formattedColumns);
-  // console.log(dataToUpdate);
-  // console.log(travelId);
-  // return connection.execute(
-  //   `UPDATE sales_products SET ${formattedColumns} WHERE sale_id = ?`,
-  //   [...Object.values(dataToUpdate[0]), travelId],
-  // );
-  
-  //   const [[result]] = await connection.execute(
-  //     'SELECT product_id, quantity FROM sales_products WHERE id = ?',
-  //     [travelId],
-  //   );
-  //   // return camelize(result);
-  // console.log(result);
-
   const formattedColumns = dataToUpdateArr.map((dataToUpdate) => Object.keys(snakeize(dataToUpdate))
     .map((key) => `${key} = ?`)
       .join(', '));
   
   formattedColumns.forEach(async (formattedColumn, index) =>
-    // console.log(Object.values(dataToUpdateArr[index]), 'asddasdasd');
     connection.execute(
       `UPDATE sales_products SET ${formattedColumn} WHERE sale_id = ? and product_id = ?`,
       [
