@@ -3,7 +3,6 @@ const snakeize = require('snakeize');
 const connection = require('./connection');
 
 const insert = async (product) => {
-  console.log(product);
   const columns = Object.keys(snakeize(product))
     .map((key) => `${key}`)
     .join(', ');

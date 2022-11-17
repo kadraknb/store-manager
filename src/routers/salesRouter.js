@@ -21,5 +21,5 @@ router.get('/', getAll);
 router.use(productId, quantity);
 router.put('/:id', updateById);
 router.post('/', insert);
-// router.post("/", controllers.products.insert);
+
 module.exports = router;
